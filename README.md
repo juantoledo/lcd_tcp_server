@@ -3,6 +3,12 @@
 A Python-based TCP server that communicates with an Arduino via serial and updates an I2C-connected LCD display. This server allows external systems to send simple messages over TCP to be shown on the LCD.
 
 ---
+For working with LCD1602 + IIC/i2C:
+
+https://www.ebay.com/itm/254801086470
+
+![LCD1602](lcd1602.png)
+
 
 ## ✨ Features
 
