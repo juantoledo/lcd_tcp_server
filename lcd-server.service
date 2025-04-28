@@ -1,0 +1,12 @@
+[Unit]
+Description=LCD TCP Server for Arduino
+After=network.target
+
+[Service]
+ExecStart=/opt/lcd-server/venv/bin/python /opt/lcd-server/lcd_tcp_server.py --vid 2341 --pid 0001 --baud 9600 --tcp 9999
+WorkingDirectory=/opt/lcd-server
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
