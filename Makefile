@@ -21,40 +21,40 @@ help:
 
 install:
 	@echo "[+] Creating install dir at $(INSTALL_DIR)"
-	sudo mkdir -p $(INSTALL_DIR)
-	sudo cp lcd_tcp_server.py requirements.txt $(INSTALL_DIR)/
+	mkdir -p $(INSTALL_DIR)
+	cp lcd_tcp_server.py requirements.txt $(INSTALL_DIR)/
 
 	@echo "[+] Setting up Python virtual environment"
-	cd $(INSTALL_DIR) && $(PYTHON) -m venv venv && source venv/bin/activate && venv/bin/pip install -r requirements.txt
+	cd $(INSTALL_DIR) && $(PYTHON) -m venv venv && . venv/bin/activate && venv/bin/pip install -r requirements.txt
 
 	@echo "[+] Creating systemd service"
 	@echo "    USER: $(USER)"
 	sed "s|/usr/bin/python3|$(INSTALL_DIR)/venv/bin/python|g" $(SERVICE_FILE) | \
 	sed "s|/opt/lcd-server|$(INSTALL_DIR)|g" | \
 	( if [ -n "$(USER)" ]; then sed "s|^#User=.*|User=$(USER)|"; else cat; fi ) | \
-	sudo tee /etc/systemd/system/$(APP_NAME).service > /dev/null
+	tee /etc/systemd/system/$(APP_NAME).service > /dev/null
 
 	@echo "[+] Enabling and reloading systemd"
-	sudo systemctl daemon-reexec
-	sudo systemctl daemon-reload
-	sudo systemctl enable $(APP_NAME)
+	systemctl daemon-reexec
+	systemctl daemon-reload
+	systemctl enable $(APP_NAME)
 
 	@echo "[✔] Installation complete. Use 'make start' to run the service."
 
 start:
-	sudo systemctl start $(APP_NAME)
+	systemctl start $(APP_NAME)
 	@echo "[✔] Service started."
 
 stop:
-	sudo systemctl stop $(APP_NAME)
+	systemctl stop $(APP_NAME)
 	@echo "[✔] Service stopped."
 
 restart:
-	sudo systemctl restart $(APP_NAME)
+	systemctl restart $(APP_NAME)
 	@echo "[✔] Service restarted."
 
 logs:
-	sudo journalctl -fu $(APP_NAME)
+	journalctl -fu $(APP_NAME)
 
 test:
 	@echo "[TEST] Sending test message to LCD..."
@@ -62,9 +62,9 @@ test:
 
 uninstall:
 	@echo "[!] Removing service and installation..."
-	sudo systemctl stop $(APP_NAME)
-	sudo systemctl disable $(APP_NAME)
-	sudo rm -f /etc/systemd/system/$(APP_NAME).service
-	sudo rm -rf $(INSTALL_DIR)
-	sudo systemctl daemon-reload
+	systemctl stop $(APP_NAME)
+	systemctl disable $(APP_NAME)
+	rm -f /etc/systemd/system/$(APP_NAME).service
+	rm -rf $(INSTALL_DIR)
+	systemctl daemon-reload
 	@echo "[✔] Service and files removed."
